@@ -1,42 +1,20 @@
 'user strict'
 import images  from "./gallery_items.js";
-
-const refs = {
-  gallery: document.querySelector('.js-gallery'),
-  image: document.createElement('img'),
-  lightbox: document.querySelector('.lightbox'),
-  btn: document.querySelector('[data-action="close-lightbox"]'),
-  modal: document.querySelector('.lightbox__content'),
-  lightbox__image: document.querySelector('.lightbox__image'),
-};
-
-function createGalleryCards(images) {
-  return images
-    .map(({ preview, original, description}) => {
-      return `
-   <li class="gallery__item">
-  <a
-    class="gallery__link"
-    href=${original} >
-    <img
-      class="gallery__image"
-      src=${preview}
-      data-source=${original}
-      alt=${description}
-    />
-  </a>
-</li>
-    `;
-    })
-    .join('');
-  
-};
+import refs from "./refs.js"
+import {createGalleryCards} from "./createGalleryCards.js"
 
 
 refs.gallery.insertAdjacentHTML('afterbegin', createGalleryCards(images));
 refs.gallery.addEventListener('click', onGallery);
 refs.btn.addEventListener('click', galleryClose);
 refs.modal.addEventListener('click', closeLightbox);
+
+function gallerySrc(src) {
+  return (refs.lightbox__image.src = src);
+}
+function galleryAlt(alt) {
+  return (refs.lightbox__image.alt = alt);
+}
 
 function onGallery(event) {
   event.preventDefault();
@@ -45,19 +23,20 @@ function onGallery(event) {
     return;
   }
 
-   refs.lightbox.classList.add('is-open');
-    refs.lightbox__image.src = event.target.getAttribute('data-source');
-    refs.lightbox__image.alt = event.target.alt;
+  refs.lightbox.classList.add('is-open');
+  gallerySrc(event.target.getAttribute('data-source'));
+  galleryAlt(e.target.alt);
+    
   
 }
 
 function galleryClose(event) {
   event.preventDefault(); 
-  refs.lightbox.classList.remove('is-open');
-  refs.lightbox__image.src = '';
-  refs.lightbox__image.alt = '';
+  refs.lightbox.classList.remove('is-open');  
   
 }
+
+
 
 function closeLightbox(event) {
   if (event.target === event.currentTarget) {
